@@ -1,11 +1,5 @@
 # mesh-chain
 
-![光谱logo2(1).png](https://upload-images.jianshu.io/upload_images/528413-0c926281c1d94539.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/440)
-
-
-
-
-
 mesh-chain is an [Spectrum-compatible](https://github.com/SmartMeshFoundation/Spectrum) project. It uses a new consensus and new block reward for meshbox ecosystem.
 
 Since the list of signers is 21, it is recommended that the confirmation number of general transfer transaction block be set to 21 (one round), and that of exchange block be set to 42 (two rounds).
