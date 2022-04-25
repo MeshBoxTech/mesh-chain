@@ -6,18 +6,15 @@
 
 
 
-mesh-chain is an [Ethereum-compatible](https://github.com/ethereum/go-ethereum) project. It uses a new consensus and new block reward for SmartMesh ecosystem devices and IOT. And you can view the transactions on the [
-BlockChain Browser Address](https://mesh-chain.pub).
+mesh-chain is an [Spectrum-compatible](https://github.com/SmartMeshFoundation/Spectrum) project. It uses a new consensus and new block reward for meshbox ecosystem.
 
-
-Since the list of signers is 17, it is recommended that the confirmation number of general transfer transaction block be set to 17 (one round), and that of exchange block be set to 34 (two rounds).
+Since the list of signers is 21, it is recommended that the confirmation number of general transfer transaction block be set to 21 (one round), and that of exchange block be set to 42 (two rounds).
 
 ## List of Chain ID's:
 | Chain(s)    |  CHAIN_ID  | 
 | ----------  | :-----------:| 
-| mainnet     | 20180430     | 
-| testnet     | 2022         | 
-| devnet      | 4            | 
+| mainnet     | 20220430     | 
+| testnet     | 2023         | 
 
 ## Warning
 
