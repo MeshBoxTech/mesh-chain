@@ -1,6 +1,6 @@
 # mesh-chain
 
-mesh-chain is an [Spectrum-compatible](https://github.com/SmartMeshFoundation/Spectrum) project. It uses a new consensus and new block reward for meshbox ecosystem.
+mesh-chain is an [Spectrum-compatible](https://github.com/SmartMeshFoundation/Spectrum) project. It uses a new consensus and new block reward for meshbox ecosystem（Note: mesh-chain require smt as gas）.
 
 Since the list of signers is 21, it is recommended that the confirmation number of general transfer transaction block be set to 21 (one round), and that of exchange block be set to 42 (two rounds).
 
