@@ -54,18 +54,6 @@ func run(evm *EVM, contract *Contract, input []byte) ([]byte, error) {
 			return RunPrecompiledContract(p, input, contract)
 		}
 	}
-	// modify by liangc
-	//fmt.Println("run:", contract.CallerAddress.Hex(), "->", contract.Address().Hex())
-	var byCreate = false
-	if contract != nil && contract.CallerAddress != common.HexToAddress("0x") {
-		_, byCreate = createSync.Load(contract.CallerAddress)
-	}
-	if !byCreate && (params.IsChiefAddress(contract.Address()) || params.IsChiefCalled(contract.CallerAddress, contract.Address())) {
-		evm.interpreter.cfg.DisableGasMetering = true
-	} else {
-		evm.interpreter.cfg.DisableGasMetering = false
-	}
-
 	return evm.interpreter.Run(contract, input)
 }
 

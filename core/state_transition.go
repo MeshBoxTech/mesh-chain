@@ -165,17 +165,6 @@ func (st *StateTransition) useGas(amount uint64) error {
 
 	return nil
 }
-
-// TODO : if chief tx skip balance verify.
-func (st *StateTransition) IsChiefSIP100() bool {
-	if params.IsSIP100Block(st.blockNumber) &&
-		st.to().Address() != common.HexToAddress("0x") &&
-		params.IsChiefAddress(st.to().Address()) {
-		return true
-	}
-	return false
-}
-
 func (st *StateTransition) buyGas() error {
 
 	mgas := st.msg.Gas()
@@ -190,20 +179,14 @@ func (st *StateTransition) buyGas() error {
 		sender = st.from()
 	)
 
-	if params.IsSIP001Block(st.blockNumber) {
-		if err := st.gp.SubGas(mgas); err != nil {
-			return err
-		}
+	if err := st.gp.SubGas(mgas); err != nil {
+		return err
 	}
+
 	st.gas += mgas.Uint64()
 	st.initialGas.Set(mgas)
-	// if chief tx skip balance verify.
-	if !st.IsChiefSIP100() {
-		isok := state.GetBalance(sender.Address()).Cmp(mgval) < 0
-		//if state.GetBalance(sender.Address()).Cmp(mgval) < 0 {
-		if isok {
-			return errInsufficientBalanceForGas
-		}
+	if state.GetBalance(sender.Address()).Cmp(mgval) < 0 {
+		return errInsufficientBalanceForGas
 	}
 
 	log.Debug("<<StateTransition.buyGas>> 1", "num", st.evm.BlockNumber, "from", sender.Address().Hex(), "gas*price", mgval)
@@ -288,10 +271,6 @@ func (st *StateTransition) TransitionDb() (ret []byte, requiredGas, usedGas *big
 	st.refundGas()
 	_m := st.evm.Coinbase
 	_r := new(big.Int).Mul(st.gasUsed(), st.gasPrice)
-	if params.IsChiefAddress(st.to().Address()) {
-		_m = sender.Address()
-	}
-
 	log.Debug("<<StateTransition.TransitionDb>> 3", "num", st.evm.BlockNumber, "from", sender.Address().Hex(), "miner", st.evm.Coinbase.Hex(), "gas_reward", _r)
 	st.state.AddBalance(_m, _r)
 	return ret, requiredGas, st.gasUsed(), vmerr != nil, err

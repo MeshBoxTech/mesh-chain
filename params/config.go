@@ -24,14 +24,14 @@ import (
 )
 
 var (
-	MainnetGenesisHash = common.HexToHash("0xa8ab5ecb308dd061e6baa8c8a04a62b3e35fae7aae1393921f8d52deac2c5712") // enforce below configs on
-	TestnetGenesisHash = common.HexToHash("0x6e1e4742cf597797eae05e18496626fba003cbad887fb62fb6cb34172801ecae") // Testnet genesis hash to enforce below configs on
-	SmartMeshContractAddress                   = common.HexToAddress("0x0000000000000000000000000000000000001000")
-	MeshContractAddress                        = common.HexToAddress("0x0000000000000000000000000000000000002000")
-	ValidatorsContractAddr                     = common.HexToAddress("0x0000000000000000000000000000000000003000")
-	OwnerAddress                               = common.HexToAddress("0x0000000000000000000000000000000000000000")
-	TotalMeshHash                              = common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000001")
-	UsingOVM                                   = true
+	MainnetGenesisHash       = common.HexToHash("0xa8ab5ecb308dd061e6baa8c8a04a62b3e35fae7aae1393921f8d52deac2c5712") // enforce below configs on
+	TestnetGenesisHash       = common.HexToHash("0x6e1e4742cf597797eae05e18496626fba003cbad887fb62fb6cb34172801ecae") // Testnet genesis hash to enforce below configs on
+	SmartMeshContractAddress = common.HexToAddress("0x0000000000000000000000000000000000001000")
+	MeshContractAddress      = common.HexToAddress("0x0000000000000000000000000000000000002000")
+	ValidatorsContractAddr   = common.HexToAddress("0x0000000000000000000000000000000000003000")
+	OwnerAddress             = common.HexToAddress("0x0000000000000000000000000000000000000000")
+	TotalMeshHash            = common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000001")
+	UsingOVM                 = true
 )
 
 var (
@@ -46,9 +46,9 @@ var (
 		EIP155Block:    big.NewInt(0),
 		EIP158Block:    big.NewInt(0),
 		ByzantiumBlock: big.NewInt(0),
-		Tribe:           &TribeConfig{
-			Period:30,
-			Epoch:21,
+		Tribe: &TribeConfig{
+			Period: 30,
+			Epoch:  21,
 		},
 	}
 
@@ -63,28 +63,9 @@ var (
 		EIP155Block:    big.NewInt(0),
 		EIP158Block:    big.NewInt(0),
 		ByzantiumBlock: big.NewInt(0),
-		// 0.0.2
-		Chief002Block:   big.NewInt(20000),
-		Chief002Address: common.HexToAddress("0x75f7D812142c6f4BB39ad2c70424CF27869EAB33"),
-		// new rules for chief.tx of gaspool
-		SIP001Block: big.NewInt(24000),
-		SIP002Block: big.NewInt(24000),
-
-		// base block link to Chief100Block
-		ChiefBaseAddress: common.HexToAddress("0xa44B4ff09825f8c21fc4ad7FAA125a0d6238d0fd"),
-		//ChiefBaseAddress: common.HexToAddress("0xeb97d5201a79717675c03e80ef3ed0c00ec777fc"),
-
-		// PocBlock must less than Chief100Block
-		PocAddress: common.HexToAddress("0x32bcF7d3b48A7Ceaa1b45199CB94098d0b3b3112"),
-		//PocAddress: common.HexToAddress("0xe3d5627f6f854481b23da37cea623411bf090881"),
-
-		Chief100Block:   big.NewInt(26000),
-		Chief100Address: common.HexToAddress("0x754FF9bDC93C66ff235b7AaaDcaeECdD63442657"),
-		//Chief100Address: common.HexToAddress("0x695249d987d10bcccda9bcaa3090db8565c317d1"),
-
-		Tribe:           &TribeConfig{
-			Period:30,
-			Epoch:21,
+		Tribe: &TribeConfig{
+			Period: 30,
+			Epoch:  21,
 		},
 	}
 	// AllEthashProtocolChanges contains every protocol change (EIPs) introduced
@@ -171,46 +152,6 @@ type ChainConfig struct {
 	Ethash *EthashConfig `json:"ethash,omitempty"`
 	Clique *CliqueConfig `json:"clique,omitempty"`
 	Tribe  *TribeConfig  `json:"tribe,omitempty"` // add by liangc
-
-	// >>> add by liangc : set chief start number >>>
-	// chief.sol vsn 0.0.2
-	Chief002Block   *big.Int       `json:"chief002Block,omitempty"`
-	Chief002Address common.Address `json:"chief002Address,omitempty"`
-	// chief.sol vsn 0.0.3
-	Chief003Block   *big.Int       `json:"chief003Block,omitempty"`
-	Chief003Address common.Address `json:"chief003Address,omitempty"`
-	// chief.sol vsn 0.0.4
-	Chief004Block   *big.Int       `json:"chief004Block,omitempty"`
-	Chief004Address common.Address `json:"chief004Address,omitempty"`
-	// chief.sol vsn 0.0.5
-	Chief005Block   *big.Int       `json:"chief005Block,omitempty"`
-	Chief005Address common.Address `json:"chief005Address,omitempty"`
-	// chief.sol vsn 0.0.6
-	Chief006Block   *big.Int       `json:"chief006Block,omitempty"`
-	Chief006Address common.Address `json:"chief006Address,omitempty"`
-
-	// extends 0.0.6 only for dev and test
-	Chief007Block   *big.Int       `json:"chief007Block,omitempty"`
-	Chief007Address common.Address `json:"chief007Address,omitempty"`
-	// https://github.com/MeshBoxTech/mesh-chain/wiki/%5BChinese%5D-v1.0.0-Standard
-	Chief100Block   *big.Int       `json:"chief100Block,omitempty"`
-	Chief100Address common.Address `json:"chief100Address,omitempty"`
-
-	ChiefBaseAddress common.Address `json:"chiefBaseAddress,omitempty"`
-
-	//PocBlock   *big.Int       `json:"PocBlock,omitempty"`
-	PocAddress common.Address `json:"PocAddress,omitempty"`
-
-	// <<< add by liangc : set chief start number <<<
-	// add by liangc : new rules for chief.tx of gaspool
-	SIP001Block *big.Int `json:"sip001Block,omitempty"` // SIP001 HF block
-	// add by liangc : new rules for block period
-	SIP002Block *big.Int `json:"sip002Block,omitempty"` // SIP002 HF block
-
-	Anmap001Block   *big.Int       `json:"anmap001Block,omitempty"`
-	Anmap001Address common.Address `json:"anmap001Address,omitempty"`
-
-	//Sip004Block *big.Int `json:"sip004Block,omitempty"`
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.

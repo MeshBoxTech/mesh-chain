@@ -25,8 +25,6 @@ import (
 	"sync"
 	"time"
 
-	"crypto/ecdsa"
-
 	"github.com/MeshBoxTech/mesh-chain/common"
 	"github.com/MeshBoxTech/mesh-chain/core/state"
 	"github.com/MeshBoxTech/mesh-chain/core/types"
@@ -266,8 +264,6 @@ type TxPool struct {
 	locals  *accountSet // Set of local transaction to exempt from eviction rules
 	journal *txJournal  // Journal of local transaction to back up to disk
 
-	nodeKey *ecdsa.PrivateKey
-
 	//pending map[common.Address]*txList         // All currently processable transactions
 	pending *safePending                       // All currently processable transactions
 	queue   map[common.Address]*txList         // Queued but non-processable transactions
@@ -322,14 +318,6 @@ func NewTxPool(config TxPoolConfig, chainconfig *params.ChainConfig, chain block
 	// Start the event loop and return
 	pool.wg.Add(1)
 	go pool.loop()
-
-	// add by liangc : set nodekey
-	go func() {
-		<-params.InitTribeStatus
-		rtn := params.SendToMsgBox("GetNodeKey")
-		success := <-rtn
-		pool.nodeKey = success.Entity.(*ecdsa.PrivateKey)
-	}()
 	return pool
 }
 
@@ -697,7 +685,6 @@ func (pool *TxPool) validateTx(tx *types.Transaction, local bool) error {
 	}
 	return nil
 }
-
 
 // add validates a transaction and inserts it into the non-executable queue for
 // later pending promotion and execution. If the transaction is a replacement for

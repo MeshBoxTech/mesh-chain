@@ -27,8 +27,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"crypto/ecdsa"
-
 	"github.com/MeshBoxTech/mesh-chain/common"
 	"github.com/MeshBoxTech/mesh-chain/common/mclock"
 	"github.com/MeshBoxTech/mesh-chain/consensus"
@@ -117,7 +115,6 @@ type BlockChain struct {
 
 	badBlocks *lru.Cache // Bad block cache
 
-	nodeKey *ecdsa.PrivateKey
 }
 
 // NewBlockChain returns a fully initialised block chain using information
@@ -173,13 +170,6 @@ func NewBlockChain(chainDb ethdb.Database, config *params.ChainConfig, engine co
 	}
 	// Take ownership of this particular state
 	go bc.update()
-	// add by liangc : set nodekey
-	go func() {
-		<-params.InitTribeStatus
-		rtn := params.SendToMsgBox("GetNodeKey")
-		success := <-rtn
-		bc.nodeKey = success.Entity.(*ecdsa.PrivateKey)
-	}()
 	return bc, nil
 }
 
