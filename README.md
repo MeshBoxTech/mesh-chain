@@ -4,17 +4,17 @@ mesh-chain is an [Spectrum-compatible](https://github.com/SmartMeshFoundation/Sp
 
 Since the list of signers is 21, it is recommended that the confirmation number of general transfer transaction block be set to 21 (one round), and that of exchange block be set to 42 (two rounds).
 
-## List of ERC-20:
-|   Name      |   Address   | 
-| ----------  | :-----------:| 
-|   SMT       | 20220430     | 
-|   MESH      | 2023         | 
+## List of ERC-20 Token's:
+|   Name(s)   |   Address                                 | 
+| ----------  | :----------------------------------------:| 
+|   SMT       | 0x0000000000000000000000000000000000001000| 
+|   MESH      | 0x0000000000000000000000000000000000002000| 
 
 ## List of Chain ID's:
-| Chain(s)    |  CHAIN_ID                                      | 
-| ----------  | :---------------------------------------------:| 
-| mainnet     | 0x0000000000000000000000000000000000001000     | 
-| testnet     | 0x0000000000000000000000000000000000002000     | 
+| Chain(s)    | CHAIN_ID | 
+| ----------  | :-------:| 
+| mainnet     | 20220430 | 
+| testnet     |  2023    | 
 
 ## Warning
 
