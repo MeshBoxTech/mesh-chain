@@ -49,10 +49,10 @@ Building mesh-chain requires both a Go (version 1.9.2 or later) and a C compiler
     
     > tribe.bindSign("account") 
     
-## More functions
-    Users can input tribe to view:
+## Get Validators
+    Users can view the latest list of validators:
     
-    > tribe
+    > tribe.getValidators()
     
 ## Security-related 
   
