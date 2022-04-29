@@ -32,7 +32,6 @@ import (
 	sha33 "golang.org/x/crypto/sha3"
 
 	"github.com/holiman/uint256"
-
 )
 
 // sigHash returns the hash which is used as input for the proof-of-authority
@@ -123,17 +122,17 @@ func New(accman *accounts.Manager, config *params.TribeConfig, db ethdb.Database
 		config:   &conf,
 		sigcache: sigcache,
 		recents:  recents,
-		db:db,
+		db:       db,
 	}
 	return tribe
 }
 
-func (t *Tribe) Init(fn StateFn,nodekey *ecdsa.PrivateKey) {
-	    t.nodeKey= nodekey
-		t.stateFn = fn
-		t.abi = GetInteractiveABI()
-		t.isInit = true
-		log.Info("init tribe.status success.")
+func (t *Tribe) Init(fn StateFn, nodekey *ecdsa.PrivateKey) {
+	t.nodeKey = nodekey
+	t.stateFn = fn
+	t.abi = GetInteractiveABI()
+	t.isInit = true
+	log.Info("init tribe.status success.")
 }
 func (t *Tribe) GetConfig() *params.TribeConfig {
 	return t.config
@@ -294,8 +293,6 @@ func (t *Tribe) verifyCascadingFields(chain consensus.ChainReader, header *types
 
 	minGasLimit := params.MinGasLimit
 
-
-
 	if diff.Cmp(limit) >= 0 || header.GasLimit.Cmp(minGasLimit) < 0 {
 		return fmt.Errorf("invalid gas limit: have %v, want %v += %v", header.GasLimit, parent.GasLimit, limit)
 	}
@@ -305,7 +302,7 @@ func (t *Tribe) verifyCascadingFields(chain consensus.ChainReader, header *types
 		return consensus.ErrInvalidNumber
 	}
 
-	return t.verifySeal(chain,header,parents)
+	return t.verifySeal(chain, header, parents)
 }
 
 // VerifyUncles implements consensus.Engine, always returning an error for any
@@ -405,11 +402,11 @@ func (t *Tribe) Prepare(chain consensus.ChainReader, header *types.Header) error
 		header.Extra = append(header.Extra, vrf...)
 		newValidators, err := t.getNewValidators(chain, header)
 		if err != nil {
-		  	return err
+			return err
 		}
 		for _, validator := range newValidators {
 			header.Extra = append(header.Extra, validator.Bytes()...)
-		 }
+		}
 	}
 	header.Extra = append(header.Extra, make([]byte, extraSeal)...)
 
@@ -429,13 +426,14 @@ func (t *Tribe) Prepare(chain consensus.ChainReader, header *types.Header) error
 
 	//替补出块延迟
 	delay := backOffTime(snap, t.GetMinerAddress())
-	header.Time = new(big.Int).Add(header.Time , new(big.Int).SetUint64(delay))
+	header.Time = new(big.Int).Add(header.Time, new(big.Int).SetUint64(delay))
 
 	if header.Time.Int64() < time.Now().Unix() {
 		header.Time = big.NewInt(time.Now().Unix())
 	}
 	return nil
 }
+
 // Finalize implements consensus.Engine, ensuring no uncles are set, nor block
 // rewards given, and returns the final block.
 func (t *Tribe) Finalize(chain consensus.ChainReader, header *types.Header, state *state.StateDB, txs []*types.Transaction, uncles []*types.Header, receipts []*types.Receipt) (*types.Block, error) {
@@ -443,20 +441,20 @@ func (t *Tribe) Finalize(chain consensus.ChainReader, header *types.Header, stat
 	if header.Number.Cmp(common.Big1) == 0 {
 		if err := t.initializeSystemContracts(chain, header, state); err != nil {
 			log.Error("Initialize system contracts failed", "err", err)
-			return nil,err
+			return nil, err
 		}
 	}
 
 	if header.Difficulty.Cmp(diffInTurn) != 0 {
 		if err := t.tryPunishValidator(chain, header, state); err != nil {
-			return nil,err
+			return nil, err
 		}
 	}
 
 	if header.Number.Uint64()%t.config.Epoch == 0 {
 		newValidators, err := t.doSomethingAtEpoch(chain, header, state)
-		if err!= nil {
-			return nil,err
+		if err != nil {
+			return nil, err
 		}
 		//verify validators
 		validatorsBytes := make([]byte, len(newValidators)*common.AddressLength)
@@ -465,7 +463,7 @@ func (t *Tribe) Finalize(chain consensus.ChainReader, header *types.Header, stat
 		}
 		extraSuffix := len(header.Extra) - extraSeal
 		if !bytes.Equal(header.Extra[extraVanity+extraVrf:extraSuffix], validatorsBytes) {
-			return nil,errInvalidExtraValidators
+			return nil, errInvalidExtraValidators
 		}
 	}
 	t.accumulateRewards(chain, state, header)
@@ -483,17 +481,16 @@ func (t *Tribe) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 	// Sealing the genesis block is not supported
 	number := header.Number.Uint64()
 	if number == 0 {
-		return nil,errUnknownBlock
+		return nil, errUnknownBlock
 	}
-
 
 	snap, err := t.snapshot(chain, number-1, header.ParentHash, nil)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	// Bail out if we're unauthorized to sign a block
 	if _, authorized := snap.Validators[t.GetMinerAddress()]; !authorized {
-		return nil,errUnauthorizedValidator
+		return nil, errUnauthorizedValidator
 	}
 
 	now := time.Now()
@@ -579,7 +576,7 @@ func (t *Tribe) initializeSystemContracts(chain consensus.ChainReader, header *t
 		packFun func() ([]byte, error)
 	}{
 		{params.ValidatorsContractAddr, func() ([]byte, error) {
-			return t.abi[ValidatorsContractName].Pack(method, genesisValidators,params.OwnerAddress)
+			return t.abi[ValidatorsContractName].Pack(method, genesisValidators, params.OwnerAddress)
 		}},
 	}
 
@@ -589,7 +586,7 @@ func (t *Tribe) initializeSystemContracts(chain consensus.ChainReader, header *t
 			return err
 		}
 		chainConfig := params.MainnetChainConfig
-		if params.IsTestnet(){
+		if params.IsTestnet() {
 			chainConfig = params.TestChainConfig
 		}
 		nonce := state.GetNonce(header.Coinbase)
@@ -603,13 +600,13 @@ func (t *Tribe) initializeSystemContracts(chain consensus.ChainReader, header *t
 }
 
 func (t *Tribe) getNewValidators(chain consensus.ChainReader, header *types.Header) ([]common.Address, error) {
-	if header.Number.Uint64() ==0 {
+	if header.Number.Uint64() == 0 {
 		validators := make([]common.Address, (len(header.Extra)-extraVanity-extraVrf-extraSeal)/common.AddressLength)
 		for i := 0; i < len(validators); i++ {
-		   copy(validators[i][:], header.Extra[extraVanity+extraVrf+i*common.AddressLength:])
-	    }
-	    return validators,nil
-    }
+			copy(validators[i][:], header.Extra[extraVanity+extraVrf+i*common.AddressLength:])
+		}
+		return validators, nil
+	}
 	parent := chain.GetHeader(header.ParentHash, header.Number.Uint64()-1)
 	if parent == nil {
 		return []common.Address{}, consensus.ErrUnknownAncestor
@@ -626,12 +623,12 @@ func (t *Tribe) getNewValidators(chain consensus.ChainReader, header *types.Head
 
 	// method
 	method := "getNewValidators"
-	vrf :=header.Extra[extraVanity:extraVanity+extraVrf]
+	vrf := header.Extra[extraVanity : extraVanity+extraVrf]
 	rand := new(big.Int).SetBytes(vrf)
-	v,_ := uint256.FromBig(rand)
-	data, err := t.abi[ValidatorsContractName].Pack(method,v.ToBig())
+	v, _ := uint256.FromBig(rand)
+	data, err := t.abi[ValidatorsContractName].Pack(method, v.ToBig())
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	// call contract
@@ -639,13 +636,13 @@ func (t *Tribe) getNewValidators(chain consensus.ChainReader, header *types.Head
 	msg := vmcaller.NewLegacyMessage(header.Coinbase, &params.ValidatorsContractAddr, nonce, new(big.Int), new(big.Int).SetUint64(math.MaxUint64), new(big.Int), data, false)
 	//
 	chainConfig := params.MainnetChainConfig
-	if params.IsTestnet(){
+	if params.IsTestnet() {
 		chainConfig = params.TestChainConfig
 	}
-	result, err := vmcaller.ExecuteMsg(msg, statedb, parent, newChainContext(chain, t), chainConfig);
-	if  err != nil {
+	result, err := vmcaller.ExecuteMsg(msg, statedb, parent, newChainContext(chain, t), chainConfig)
+	if err != nil {
 		log.Error("Can't decrease missed blocks counter for validator", "err", err)
-		return nil,err
+		return nil, err
 	}
 	var out []common.Address
 	if err := t.abi[ValidatorsContractName].Unpack(&out, method, result); err != nil {
@@ -662,11 +659,11 @@ func (t *Tribe) punishValidator(val common.Address, chain consensus.ChainReader,
 		log.Error("Can't pack data for punish", "error", err)
 		return err
 	}
-	log.Warn("tryPunishValidator", "addr=", val,"number=",header.Number.Uint64())
+	log.Debug("tryPunishValidator", "addr=", val, "number=", header.Number.Uint64())
 	// call contract
 	nonce := state.GetNonce(header.Coinbase)
 	chainConfig := params.MainnetChainConfig
-	if params.IsTestnet(){
+	if params.IsTestnet() {
 		chainConfig = params.TestChainConfig
 	}
 	msg := vmcaller.NewLegacyMessage(header.Coinbase, &params.ValidatorsContractAddr, nonce, new(big.Int), new(big.Int).SetUint64(math.MaxUint64), new(big.Int), data, true)
@@ -687,7 +684,7 @@ func (t *Tribe) tryPunishValidator(chain consensus.ChainReader, header *types.He
 	validators := snap.validators()
 	outTurnValidator := validators[number%uint64(len(validators))]
 	if err := t.punishValidator(outTurnValidator, chain, header, state); err != nil {
-			return err
+		return err
 	}
 	return nil
 }
@@ -711,6 +708,7 @@ func (t *Tribe) doSomethingAtEpoch(chain consensus.ChainReader, header *types.He
 
 	return newValidators, nil
 }
+
 // snapshot retrieves the authorization snapshot at a given point in time.
 func (t *Tribe) snapshot(chain consensus.ChainReader, number uint64, hash common.Hash, parents []*types.Header) (*Snapshot, error) {
 	// Search for a snapshot in memory or on disk for checkpoints
@@ -776,7 +774,7 @@ func (t *Tribe) snapshot(chain consensus.ChainReader, number uint64, hash common
 	for i := 0; i < len(headers)/2; i++ {
 		headers[i], headers[len(headers)-1-i] = headers[len(headers)-1-i], headers[i]
 	}
-	snap, err := snap.apply(headers, chain, parents,t)
+	snap, err := snap.apply(headers, chain, parents, t)
 	if err != nil {
 		return nil, err
 	}
@@ -810,11 +808,11 @@ func (t *Tribe) APIs(chain consensus.ChainReader) []rpc.API {
 }
 
 // AccumulateRewards credits the coinbase of the given block with the validator
-func accumulateTotalBalance(state *state.StateDB,blockReward *big.Int) {
-    val := state.GetState(params.MeshContractAddress,params.TotalMeshHash)
-    newValue := val.Big().Add(val.Big(),blockReward)
-    vals := common.BytesToHash(newValue.Bytes())
-    state.SetState(params.MeshContractAddress,params.TotalMeshHash,vals)
+func accumulateTotalBalance(state *state.StateDB, blockReward *big.Int) {
+	val := state.GetState(params.MeshContractAddress, params.TotalMeshHash)
+	newValue := val.Big().Add(val.Big(), blockReward)
+	vals := common.BytesToHash(newValue.Bytes())
+	state.SetState(params.MeshContractAddress, params.TotalMeshHash, vals)
 }
 
 func GetMESHBalanceKey(addr common.Address) common.Hash {
@@ -826,28 +824,28 @@ func GetMESHBalanceKey(addr common.Address) common.Hash {
 	return common.BytesToHash(digest)
 }
 
-type bindInfo struct{
+type bindInfo struct {
 	From common.Address
-    Nids []common.Address
+	Nids []common.Address
 }
 
-func (t *Tribe) getBindInfo(chain consensus.ChainReader,header *types.Header,addr common.Address) (bindInfo,error){
-	if header.Number.Uint64() ==0 {
-		return bindInfo{From:addr,Nids:make([]common.Address,0)},nil
+func (t *Tribe) getBindInfo(chain consensus.ChainReader, header *types.Header, addr common.Address) (bindInfo, error) {
+	if header.Number.Uint64() == 0 {
+		return bindInfo{From: addr, Nids: make([]common.Address, 0)}, nil
 	}
 	parent := chain.GetHeader(header.ParentHash, header.Number.Uint64()-1)
 	if parent == nil {
-		return bindInfo{},consensus.ErrUnknownAncestor
+		return bindInfo{}, consensus.ErrUnknownAncestor
 	}
 	statedb, err := t.stateFn(parent.Root)
 	if err != nil {
-		return bindInfo{},err
+		return bindInfo{}, err
 	}
 	// method
 	method := "bindInfo"
-	data, err := t.abi[ValidatorsContractName].Pack(method,addr)
+	data, err := t.abi[ValidatorsContractName].Pack(method, addr)
 	if err != nil {
-		return bindInfo{},err
+		return bindInfo{}, err
 	}
 
 	// call contract
@@ -855,31 +853,31 @@ func (t *Tribe) getBindInfo(chain consensus.ChainReader,header *types.Header,add
 	msg := vmcaller.NewLegacyMessage(header.Coinbase, &params.ValidatorsContractAddr, nonce, new(big.Int), new(big.Int).SetUint64(math.MaxUint64), new(big.Int), data, false)
 
 	chainConfig := params.MainnetChainConfig
-	if params.IsTestnet(){
+	if params.IsTestnet() {
 		chainConfig = params.TestChainConfig
 	}
-	result, err := vmcaller.ExecuteMsg(msg, statedb, parent, newChainContext(chain, t), chainConfig);
-	if  err != nil {
+	result, err := vmcaller.ExecuteMsg(msg, statedb, parent, newChainContext(chain, t), chainConfig)
+	if err != nil {
 		log.Error("Can't decrease missed blocks counter for validator", "err", err)
-		return bindInfo{},err
+		return bindInfo{}, err
 	}
 
 	var out = bindInfo{}
 	if err := t.abi[ValidatorsContractName].Unpack(&out, method, result); err != nil {
-		return bindInfo{},err
+		return bindInfo{}, err
 	}
-	return out,nil
+	return out, nil
 }
-func (t *Tribe) accumulateAccountsBalance(chain consensus.ChainReader,header *types.Header,state *state.StateDB,blockReward *big.Int, addr common.Address) {
+func (t *Tribe) accumulateAccountsBalance(chain consensus.ChainReader, header *types.Header, state *state.StateDB, blockReward *big.Int, addr common.Address) {
 	//get miner bind wallet for receive rewards
-	bindInfo,err := t.getBindInfo(chain,header,addr)
-	if err == nil{
+	bindInfo, err := t.getBindInfo(chain, header, addr)
+	if err == nil {
 		addr = bindInfo.From
 	}
 	key := GetMESHBalanceKey(addr)
-	val := state.GetState(params.MeshContractAddress,key)
-	newVal := val.Big().Add(val.Big(),blockReward)
-	state.SetState(params.MeshContractAddress,key,common.BytesToHash(newVal.Bytes()))
+	val := state.GetState(params.MeshContractAddress, key)
+	newVal := val.Big().Add(val.Big(), blockReward)
+	state.SetState(params.MeshContractAddress, key, common.BytesToHash(newVal.Bytes()))
 }
 
 //TO DO
@@ -893,13 +891,13 @@ func (t *Tribe) accumulatePOMRewards(chain consensus.ChainReader, state *state.S
 
 	// Miner will send tx to deposit block rewards to contract, add to his balance first.
 	key := GetMESHBalanceKey(header.Coinbase)
-	val := state.GetState(params.MeshContractAddress,key)
-	newVal := val.Big().Add(val.Big(),blockReward)
-	state.SetState(params.MeshContractAddress,key,common.BytesToHash(newVal.Bytes()))
+	val := state.GetState(params.MeshContractAddress, key)
+	newVal := val.Big().Add(val.Big(), blockReward)
+	state.SetState(params.MeshContractAddress, key, common.BytesToHash(newVal.Bytes()))
 
 	//then miner send block reward to POM contract
 	method := "distributePOMReward"
-	data, err := t.abi[ValidatorsContractName].Pack(method,blockReward)
+	data, err := t.abi[ValidatorsContractName].Pack(method, blockReward)
 	if err != nil {
 		log.Error("Can't pack data for distributeBlockReward", "err", err)
 		return
@@ -908,7 +906,7 @@ func (t *Tribe) accumulatePOMRewards(chain consensus.ChainReader, state *state.S
 	nonce := state.GetNonce(header.Coinbase)
 	msg := vmcaller.NewLegacyMessage(header.Coinbase, &params.ValidatorsContractAddr, nonce, new(big.Int), new(big.Int).SetUint64(math.MaxUint64), new(big.Int), data, true)
 	chainConfig := params.MainnetChainConfig
-	if params.IsTestnet(){
+	if params.IsTestnet() {
 		chainConfig = params.TestChainConfig
 	}
 	if _, err := vmcaller.ExecuteMsg(msg, state, header, newChainContext(chain, t), chainConfig); err != nil {
@@ -925,8 +923,8 @@ func (t *Tribe) accumulateRewards(chain consensus.ChainReader, state *state.Stat
 	number = number.Div(number, big.NewInt(int64(BlockRewardReducedInterval)))
 	blockReward = blockReward.Rsh(blockReward, uint(number.Int64()))
 
-	accumulateTotalBalance(state,blockReward)
-	t.accumulateAccountsBalance(chain,header,state,blockReward,header.Coinbase)
+	accumulateTotalBalance(state, blockReward)
+	t.accumulateAccountsBalance(chain, header, state, blockReward, header.Coinbase)
 	//t.accumulatePOMRewards(chain,state, header)
 
 }
@@ -954,5 +952,3 @@ func backOffTime(snap *Snapshot, val common.Address) uint64 {
 		return delay
 	}
 }
-
-
