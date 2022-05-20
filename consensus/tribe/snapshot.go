@@ -27,9 +27,10 @@ import (
 	"github.com/MeshBoxTech/mesh-chain/ethdb"
 	"github.com/MeshBoxTech/mesh-chain/params"
 )
-// Snapshot is the state of the authorization voting at a given point in time.
+
+// Snapshot is the state of the random pos validators at a given epoch time.
 type Snapshot struct {
-	config   *params.TribeConfig // Consensus engine parameters to fine tune behavior
+	config     *params.TribeConfig         // Consensus engine parameters to fine tune behavior
 	Number     uint64                      `json:"number"`     // Block number where the snapshot was created
 	Hash       common.Hash                 `json:"hash"`       // Block hash where the snapshot was created
 	Validators map[common.Address]struct{} `json:"validators"` // Set of authorized validators at this moment
@@ -99,7 +100,7 @@ func (s *Snapshot) copy() *Snapshot {
 
 // apply creates a new authorization snapshot by applying the given headers to
 // the original one.
-func (s *Snapshot) apply(headers []*types.Header, chain consensus.ChainReader, parents []*types.Header,t *Tribe) (*Snapshot, error) {
+func (s *Snapshot) apply(headers []*types.Header, chain consensus.ChainReader, parents []*types.Header, t *Tribe) (*Snapshot, error) {
 	// Allow passing in no headers for cleaner code
 	if len(headers) == 0 {
 		return s, nil
@@ -117,7 +118,6 @@ func (s *Snapshot) apply(headers []*types.Header, chain consensus.ChainReader, p
 	snap := s.copy()
 
 	for _, header := range headers {
-		// Remove any votes on checkpoint blocks
 		number := header.Number.Uint64()
 		// Resolve the authorization key and check against validators
 		validator, err := ecrecover(header, t)
