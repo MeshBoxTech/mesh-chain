@@ -118,6 +118,7 @@ out:
 		}
 	}
 }
+
 // async run
 var xx int32 = 0
 
@@ -135,39 +136,6 @@ func (self *Miner) Start(coinbase common.Address) {
 	}
 	atomic.StoreInt32(&self.mining, 1)
 	log.Info("Starting mining operation")
-
-	//if tribe, ok := self.engine.(*tribe.Tribe); ok && self.eth.BlockChain().CurrentBlock().NumberU64() > 3 {
-	//	i := 0
-	//	for {
-	//		log.Info("<<MinerStart>> loop_start", "i", i, "num", self.eth.BlockChain().CurrentBlock().Number())
-	//		m := tribe.Status.GetMinerAddress()
-	//		s, err := self.worker.chain.State()
-	//		if err != nil {
-	//			log.Error("miner start fail", err)
-	//		}
-	//		cn := self.eth.BlockChain().CurrentBlock().Number()
-	//		// SIP100 skip this verfiy
-	//		if params.IsSIP100Block(cn) {
-	//			break
-	//		}
-	//		if s.GetBalance(m).Cmp(params.ChiefBaseBalance) >= 0 {
-	//			break
-	//		}
-	//		if atomic.LoadInt32(&self.mining) == 0 {
-	//			log.Error("miner>>>>>>>>", err)
-	//			return
-	//		}
-	//		select {
-	//		case <-stop:
-	//			return
-	//		default:
-	//			log.Info("default>>>>>>>>")
-	//			<-time.After(time.Second * 7)
-	//		}
-	//		i++
-	//	}
-	//}
-	// may be pending at 'tribe.WaitingNomination' in 'worker.start' so change to async
 	go func() {
 		s := make(chan int)
 		self.worker.start(s)
