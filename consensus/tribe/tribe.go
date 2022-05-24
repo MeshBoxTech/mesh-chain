@@ -739,7 +739,21 @@ func (t *Tribe) snapshot(chain consensus.ChainReader, number uint64, hash common
 			if checkpoint != nil {
 				hash := checkpoint.Hash()
 
+				// Check that the extra-data contains both the vanity and signature
+				if len(checkpoint.Extra) < extraVanity {
+					return nil, errMissingVanity
+				}
+				if len(checkpoint.Extra) < extraVanity+extraSeal {
+					return nil, errMissingSignature
+				}
+				// check extra data
+				signersBytes := len(checkpoint.Extra) - extraVanity - extraSeal
+				if (signersBytes-extraVrf)%validatorBytesLength != 0 {
+					return nil, errInvalidSpanValidators
+				}
+
 				validators := make([]common.Address, (len(checkpoint.Extra)-extraVanity-extraVrf-extraSeal)/common.AddressLength)
+
 				for i := 0; i < len(validators); i++ {
 					copy(validators[i][:], checkpoint.Extra[extraVanity+extraVrf+i*common.AddressLength:])
 				}
@@ -747,7 +761,7 @@ func (t *Tribe) snapshot(chain consensus.ChainReader, number uint64, hash common
 				if err := snap.store(t.db); err != nil {
 					return nil, err
 				}
-				log.Info("Stored checkpoint snapshot to disk", "number", number, "hash", hash)
+				log.Debug("Stored checkpoint snapshot to disk", "number", number, "hash", hash)
 				break
 			}
 		}
