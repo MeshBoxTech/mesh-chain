@@ -18,7 +18,9 @@ package params
 
 var MainnetBootnodes = []string{}
 
-var TestnetBootnodes = []string{}
+var TestnetBootnodes = []string{
+	"enode://2484c0c30993cd7b2fcdb0cdf897e49453b5a13439739039c87024904ff090be6862f64cea0b6a2b4748519c17355de49f48c3c3bee0f49683fab5a923e51d0b@43.138.2.80:44944",
+}
 
 var DevnetBootnodes = []string{}
 
