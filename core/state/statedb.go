@@ -89,13 +89,14 @@ func New(root common.Hash, db Database) (*StateDB, error) {
 }
 
 func GetOVMBalanceKey(addr common.Address) common.Hash {
-	position := common.Big0
+	position := common.Big2
 	hasher := sha3.NewLegacyKeccak256()
 	hasher.Write(common.LeftPadBytes(addr.Bytes(), 32))
 	hasher.Write(common.LeftPadBytes(position.Bytes(), 32))
 	digest := hasher.Sum(nil)
 	return common.BytesToHash(digest)
 }
+
 // setError remembers the first non-nil error it is called with.
 func (self *StateDB) setError(err error) {
 	if self.dbErr == nil {

@@ -830,7 +830,7 @@ func accumulateTotalBalance(state *state.StateDB, blockReward *big.Int) {
 }
 
 func GetMESHBalanceKey(addr common.Address) common.Hash {
-	position := common.Big0
+	position := common.Big2
 	hasher := sha33.NewLegacyKeccak256()
 	hasher.Write(common.LeftPadBytes(addr.Bytes(), 32))
 	hasher.Write(common.LeftPadBytes(position.Bytes(), 32))
@@ -904,28 +904,28 @@ func (t *Tribe) accumulatePOMRewards(chain consensus.ChainReader, state *state.S
 	blockReward = blockReward.Rsh(blockReward, uint(number.Int64()))
 
 	// Miner will send tx to deposit block rewards to contract, add to his balance first.
-	key := GetMESHBalanceKey(header.Coinbase)
-	val := state.GetState(params.MeshContractAddress, key)
-	newVal := val.Big().Add(val.Big(), blockReward)
-	state.SetState(params.MeshContractAddress, key, common.BytesToHash(newVal.Bytes()))
-
-	//then miner send block reward to POM contract
-	method := "distributePOMReward"
-	data, err := t.abi[ValidatorsContractName].Pack(method, blockReward)
-	if err != nil {
-		log.Error("Can't pack data for distributeBlockReward", "err", err)
-		return
-	}
-
-	nonce := state.GetNonce(header.Coinbase)
-	msg := vmcaller.NewLegacyMessage(header.Coinbase, &params.ValidatorsContractAddr, nonce, new(big.Int), new(big.Int).SetUint64(math.MaxUint64), new(big.Int), data, true)
-	chainConfig := params.MainnetChainConfig
-	if params.IsTestnet() {
-		chainConfig = params.TestChainConfig
-	}
-	if _, err := vmcaller.ExecuteMsg(msg, state, header, newChainContext(chain, t), chainConfig); err != nil {
-		return
-	}
+	//key := GetMESHBalanceKey(header.Coinbase)
+	//val := state.GetState(params.MeshContractAddress, key)
+	//newVal := val.Big().Add(val.Big(), blockReward)
+	//state.SetState(params.MeshContractAddress, key, common.BytesToHash(newVal.Bytes()))
+	//
+	////then miner send block reward to POM contract
+	//method := "distributePOMReward"
+	//data, err := t.abi[ValidatorsContractName].Pack(method, blockReward)
+	//if err != nil {
+	//	log.Error("Can't pack data for distributeBlockReward", "err", err)
+	//	return
+	//}
+	//
+	//nonce := state.GetNonce(header.Coinbase)
+	//msg := vmcaller.NewLegacyMessage(header.Coinbase, &params.ValidatorsContractAddr, nonce, new(big.Int), new(big.Int).SetUint64(math.MaxUint64), new(big.Int), data, true)
+	//chainConfig := params.MainnetChainConfig
+	//if params.IsTestnet() {
+	//	chainConfig = params.TestChainConfig
+	//}
+	//if _, err := vmcaller.ExecuteMsg(msg, state, header, newChainContext(chain, t), chainConfig); err != nil {
+	//	return
+	//}
 
 	return
 
