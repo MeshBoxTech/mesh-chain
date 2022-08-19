@@ -25,10 +25,11 @@ import (
 
 var (
 	MainnetGenesisHash       = common.HexToHash("0xa8ab5ecb308dd061e6baa8c8a04a62b3e35fae7aae1393921f8d52deac2c5712") // enforce below configs on
-	TestnetGenesisHash       = common.HexToHash("0x188dd98f47cdd71ce5acc9b04b433cc1c32e04c80803229d250497b9e6e439da") // Testnet genesis hash to enforce below configs on
+	TestnetGenesisHash       = common.HexToHash("0x92ab5d33d6ef45d46ff64fa4495f9782491e57a2d9097203d99aac1444106891") // Testnet genesis hash to enforce below configs on
 	SmartMeshContractAddress = common.HexToAddress("0x0000000000000000000000000000000000001000")
 	MeshContractAddress      = common.HexToAddress("0x0000000000000000000000000000000000002000")
 	ValidatorsContractAddr   = common.HexToAddress("0x0000000000000000000000000000000000003000")
+	PomContractAddr          = common.HexToAddress("0x0000000000000000000000000000000000004000")
 	OwnerAddress             = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	TotalMeshHash            = common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000003")
 	UsingOVM                 = true

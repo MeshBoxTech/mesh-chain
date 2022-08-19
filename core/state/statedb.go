@@ -89,7 +89,7 @@ func New(root common.Hash, db Database) (*StateDB, error) {
 }
 
 func GetOVMBalanceKey(addr common.Address) common.Hash {
-	position := common.Big2
+	position := common.Big1
 	hasher := sha3.NewLegacyKeccak256()
 	hasher.Write(common.LeftPadBytes(addr.Bytes(), 32))
 	hasher.Write(common.LeftPadBytes(position.Bytes(), 32))

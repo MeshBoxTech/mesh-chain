@@ -17,27 +17,26 @@ import (
 )
 
 const (
-
-	historyLimit = 2048
-	wiggleTime           = uint64(5)
-	initialBackOffTime   = uint64(5) // second
-	checkpointInterval = 1024 // Number of blocks after which to save the vote snapshot to the database
+	historyLimit       = 2048
+	wiggleTime         = uint64(5)
+	initialBackOffTime = uint64(5) // second
+	checkpointInterval = 1024      // Number of blocks after which to save the vote snapshot to the database
 )
 
 var (
-	blockPeriod  = uint64(15)                               // Default minimum difference between two consecutive block's timestamps
-	extraVanity = 32                                       // Fixed number of extra-data prefix bytes reserved for signer vanity
-	extraVrf    = 161                                      // before SIP100 extra format is bytes[extraVanity+extraSeal], after is bytes[extraVrf+extraSeal]
-	extraSeal    = 65                                       // Fixed number of extra-data suffix bytes reserved for signer seal
-	nonceSync    = hexutil.MustDecode("0xffffffffffffffff") // TODO Reserved to control behavior
-	nonceAsync   = hexutil.MustDecode("0x0000000000000000") // TODO Reserved to control behavior
-	uncleHash    = types.CalcUncleHash(nil)                 // Always Keccak256(RLP([])) as uncles are meaningless outside of PoW.
+	blockPeriod          = uint64(15)                               // Default minimum difference between two consecutive block's timestamps
+	extraVanity          = 32                                       // Fixed number of extra-data prefix bytes reserved for signer vanity
+	extraVrf             = 161                                      // before SIP100 extra format is bytes[extraVanity+extraSeal], after is bytes[extraVrf+extraSeal]
+	extraSeal            = 65                                       // Fixed number of extra-data suffix bytes reserved for signer seal
+	nonceSync            = hexutil.MustDecode("0xffffffffffffffff") // TODO Reserved to control behavior
+	nonceAsync           = hexutil.MustDecode("0x0000000000000000") // TODO Reserved to control behavior
+	uncleHash            = types.CalcUncleHash(nil)                 // Always Keccak256(RLP([])) as uncles are meaningless outside of PoW.
 	validatorBytesLength = common.AddressLength
-	diffInTurnMain = big.NewInt(3) // Block difficulty for in-turn Main
-	diffInTurn     = big.NewInt(2) // Block difficulty for in-turn Sub
-	diffNoTurn     = big.NewInt(1) // Block difficulty for out-of-turn Other
+	diffInTurnMain       = big.NewInt(3) // Block difficulty for in-turn Main
+	diffInTurn           = big.NewInt(2) // Block difficulty for in-turn Sub
+	diffNoTurn           = big.NewInt(1) // Block difficulty for out-of-turn Other
 	// less than SIP100 <<<<<<<<<<<<<
-	diff = int64(6) // SIP100 max diff is 6
+	diff          = int64(6) // SIP100 max diff is 6
 	maxValidators = 21
 )
 
@@ -51,7 +50,6 @@ var (
 	errInvalidVotingChain = errors.New("invalid voting chain")
 	// errUnauthorizedValidator is returned if a header is signed by a non-authorized entity.
 	errUnauthorizedValidator = errors.New("unauthorized validator")
-
 
 	// errUnknownBlock is returned when the list of signers is requested for a block
 	// that is not part of the local blockchain.
@@ -125,9 +123,9 @@ var (
 	ErrTribeChiefTxSignerAndBlockSignerNotMatch = errors.New("tribe chief update tx signer and block signer not match")
 	ErrTribeValdateTxSenderCannotInSignerList   = errors.New("tx sender cannot in signerlist")
 
-	BlockRewardReducedInterval                  = 2102400
-	MeshRewardForValidator, _                   = new(big.Int).SetString("100000000000000000000", 10) //Block reward in wei for successfully mining a block
-	MeshRewardForPom, _                         = new(big.Int).SetString("10000000000000000000000", 10) //Block reward in wei for successfully mining a block
+	BlockRewardReducedInterval = 2102400
+	MeshRewardForValidator, _  = new(big.Int).SetString("114000000000000000000", 10)   //Block reward in wei for successfully mining a block
+	MeshRewardForPom, _        = new(big.Int).SetString("17580000000000000000000", 10) //Block reward in wei for successfully mining a block
 )
 
 type Tribe struct {
@@ -136,13 +134,13 @@ type Tribe struct {
 	sigcache *lru.ARCCache       // mapping block.hash -> signer
 	//Status   *TribeStatus
 	//SealErrorCounter uint32     // less then 3 , retry commit new work
-	isInit bool
-	lock   sync.Mutex
-	stateFn StateFn // Function to get state by state root
-	abi map[string]abi.ABI // Interactive with system contracts
-	recents    *lru.ARCCache // Snapshots for recent block to speed up reorgs
-	db          ethdb.Database         // Database to store and retrieve snapshot checkpoints
-	nodeKey   *ecdsa.PrivateKey  //miner
+	isInit  bool
+	lock    sync.Mutex
+	stateFn StateFn            // Function to get state by state root
+	abi     map[string]abi.ABI // Interactive with system contracts
+	recents *lru.ARCCache      // Snapshots for recent block to speed up reorgs
+	db      ethdb.Database     // Database to store and retrieve snapshot checkpoints
+	nodeKey *ecdsa.PrivateKey  //miner
 }
 
 type API struct {
@@ -150,8 +148,6 @@ type API struct {
 	chain  consensus.ChainReader
 	tribe  *Tribe
 }
-
-
 
 type TribeMiner struct {
 	Address common.Address `json:"address"`
