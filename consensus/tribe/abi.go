@@ -30,9 +30,15 @@ const pomSetABI = `
 		"anonymous": false,
 		"inputs": [
 			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "challenger",
+				"type": "address"
+			},
+			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "addr",
+				"name": "target",
 				"type": "address"
 			}
 		],
@@ -87,6 +93,32 @@ const pomSetABI = `
 		"name": "addMeshBox",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "challengeDelay",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "challengeInterval",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{

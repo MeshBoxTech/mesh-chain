@@ -39,7 +39,7 @@ contract POM is Ownable{
   }
   event AddMeshBox(string id,address addr);
   event RemoveMeshBox(address addr);
-  event GetTarget(address addr);
+  event GetTarget(address indexed challenger,address target);
 
   //网络中的meshbox设备列表
   mapping (address => MeshBoxInfo)meshboxMap;
@@ -93,7 +93,7 @@ contract POM is Ownable{
        }
     }
     lastChallenge[msg.sender] = ChallengeInfo(target,block.number);
-    emit GetTarget(target);
+    emit GetTarget(msg.sender,target);
     return target;
  }
    //challenger获取本次挑战的target
