@@ -33,9 +33,9 @@ Building mesh-chain requires both a Go (version 1.15 or later) and a C compiler.
 
     > personal.newAccount()
 
-## Get your own miner id
+## Get your own miner info
 
-    Every node has it's own miner id, you can run getMiner() function to get that id:
+    Every node has it's own miner id, you can run getMiner() function to get that info:
 
     > tribe.getMiner() 
     
