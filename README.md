@@ -24,6 +24,10 @@ We suggest that the GasPrice should not be less than 18Gwei, otherwise the trans
 
 Building mesh-chain requires both a Go (version 1.15 or later) and a C compiler. You can install them using your favourite package manager. And you can view the detail installation and running steps on this [page](https://github.com/MeshBoxTech/mesh-chain/wiki/Building-Mesh-Chain).
 
+## Init node 
+    
+    $ ./build/bin/smc init genesis.json
+    
 ## Run node 
 
     $ ./build/bin/smc console
