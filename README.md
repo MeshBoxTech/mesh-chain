@@ -22,7 +22,7 @@ We suggest that the GasPrice should not be less than 18Gwei, otherwise the trans
 
 ## Build the source 
 
-Building mesh-chain requires both a Go (version 1.15 or later) and a C compiler. You can install them using your favourite package manager. And you can view the detail installation and running steps on this [page](https://github.com/MeshBoxTech/mesh-chain/wiki/Building-Specturm).
+Building mesh-chain requires both a Go (version 1.15 or later) and a C compiler. You can install them using your favourite package manager. And you can view the detail installation and running steps on this [page](https://github.com/MeshBoxTech/mesh-chain/wiki/Building-Mesh-Chain).
 
 ## Run node 
 
