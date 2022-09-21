@@ -22,7 +22,7 @@ import (
 	"math/big"
 
 	"github.com/MeshBoxTech/mesh-chain"
-	"github.com/MeshBoxTech/mesh-chaincommon"
+	"github.com/MeshBoxTech/mesh-chain/common"
 	"github.com/MeshBoxTech/mesh-chain/core/types"
 )
 
