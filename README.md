@@ -22,8 +22,12 @@ We suggest that the GasPrice should not be less than 18Gwei, otherwise the trans
 
 ## Build the source 
 
-Building mesh-chain requires both a Go (version 1.15 or later) and a C compiler. You can install them using your favourite package manager. And you can view the detail installation and running steps on this [page](https://github.com/MeshBoxTech/mesh-chain/wiki/Building-Specturm).
+Building mesh-chain requires both a Go (version 1.15 or later) and a C compiler. You can install them using your favourite package manager. And you can view the detail installation and running steps on this [page](https://github.com/MeshBoxTech/mesh-chain/wiki/Building-Mesh-Chain).
 
+## Init node 
+    
+    $ ./build/bin/smc init genesis.json
+    
 ## Run node 
 
     $ ./build/bin/smc console
@@ -33,9 +37,9 @@ Building mesh-chain requires both a Go (version 1.15 or later) and a C compiler.
 
     > personal.newAccount()
 
-## Get your own miner id
+## Get your own miner info
 
-    Every node has it's own miner id, you can run getMiner() function to get that id:
+    Every node has it's own miner id, you can run getMiner() function to get that info:
 
     > tribe.getMiner() 
     
